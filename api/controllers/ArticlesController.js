@@ -28,6 +28,35 @@ module.exports = {
 			} 
 			res.redirect('/articles/list');
 		})
+	},
+	delete: function(req, res){
+		Articles.destroy({id: req.params.id}).exec(function(err) {
+			if (err) {
+				res.send(500, {error: 'DB Error'})
+			}
+			res.redirect('/articles/list');
+		})
+		return false;
+	},
+	edit: function(req,res) {
+		Articles.findOne({id:req.params.id}).exec(function(err, article) {
+			if(err) {
+				res.send(500, {error: 'DB Error'})
+			}
+			res.view('edit', {article:article})
+		}) 
+	},
+	update: function(req,res) {
+		const title = req.body.title;
+		const body = req.body.body;
+
+		Articles.update({id:req.params.id}, {title:title, body:body}).exec(function(err) {
+			if(err) {
+				res.send(500, {error: 'DB Error'})
+			} 
+			res.redirect('/articles/list');
+		})
+		return false;
 	}
 };
 
